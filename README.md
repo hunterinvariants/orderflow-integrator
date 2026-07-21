@@ -1,6 +1,6 @@
 # OrderFlow Integrator
 
-[![CI](https://github.com/hunterinvariants/orderflow-integrator/actions/workflows/ci.yml/badge.svg)](https://github.com/hunterinvariants/orderflow-integrator/actions/workflows/ci.yml)
+[![CI](https://github.com/hunterinvariants/orderflow-integrator/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/hunterinvariants/orderflow-integrator/actions/workflows/ci.yml)
 
 OrderFlow Integrator is a FastAPI service that accepts orders, normalizes them, and routes them through a simple integration workflow.
 
