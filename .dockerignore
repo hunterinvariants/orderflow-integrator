@@ -1,0 +1,11 @@
+.git
+.idea
+.vscode
+.venv
+__pycache__
+.pytest_cache
+htmlcov
+dist
+build
+.env
+
