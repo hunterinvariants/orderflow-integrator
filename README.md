@@ -162,8 +162,8 @@ Prerequisites:
 
 1. Add your domain to a free Cloudflare account.
 2. Change the registrar nameservers to the two nameservers assigned by Cloudflare.
-3. In Cloudflare Zero Trust, create a tunnel named `orderflow-saintk7`.
-4. Add a public hostname such as `orderflow.saintk7.com` with service URL `http://api:8000`.
+3. In Cloudflare Zero Trust, create a tunnel named `orderflow-hunter-mvp`.
+4. Add a public hostname such as `orderflow.hunter-mvp.com` with service URL `http://api:8000`.
 5. Copy the tunnel token into the server's untracked `.env` file as `CLOUDFLARE_TUNNEL_TOKEN`.
 
 Start the stack and tunnel:
