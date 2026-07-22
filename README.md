@@ -154,17 +154,32 @@ SQLite is the zero-configuration local default. Docker Compose automatically use
 
 Copy `.env.example` to `.env` when running outside Compose. Change `ORDERFLOW_API_KEY` before exposing the service publicly. Connector implementations are deterministic mocks designed to demonstrate integration architecture without third-party credentials.
 
-## Public deployment
+## Free public deployment
 
-The included `render.yaml` provisions the web application, Celery worker, managed PostgreSQL database, and Key Value service as a Render Blueprint.
+The production-like Docker stack can run on an existing Ubuntu server and be published for free through Cloudflare Tunnel. This keeps FastAPI, PostgreSQL, Redis, and Celery running together without exposing a home IP address or opening inbound router ports.
 
-1. Sign in to Render and create a new Blueprint.
-2. Connect `hunterinvariants/orderflow-integrator`.
-3. Confirm the resources from `render.yaml`.
-4. After deployment, use the generated `onrender.com` URL as the GitHub repository website.
+Prerequisites:
 
-The worker uses a paid Starter instance because Render does not offer free background workers. For a zero-cost presentation, deploy only the web service and use the synchronous API paths, or keep the complete Docker Compose deployment on your Ubuntu host.
+1. Add your domain to a free Cloudflare account.
+2. Change the registrar nameservers to the two nameservers assigned by Cloudflare.
+3. In Cloudflare Zero Trust, create a tunnel named `orderflow-saintk7`.
+4. Add a public hostname such as `orderflow.saintk7.com` with service URL `http://api:8000`.
+5. Copy the tunnel token into the server's untracked `.env` file as `CLOUDFLARE_TUNNEL_TOKEN`.
 
+Start the stack and tunnel:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.cloudflare.yml up --build -d
+```
+
+Verify the local services and tunnel:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.cloudflare.yml ps
+curl http://localhost:8000/health
+```
+
+Cloudflare provides the public HTTPS certificate and sends traffic through an outbound-only tunnel. Never commit the tunnel token or paste it into issue reports, screenshots, or chat messages.
 ## Portfolio positioning
 
 This project demonstrates backend architecture, workflow automation, data modeling, async processing, failure recovery, API design, frontend delivery, containerization, testing, and deployment infrastructure in one reviewable repository.
