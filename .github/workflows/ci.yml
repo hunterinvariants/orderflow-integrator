@@ -32,9 +32,11 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q app tests
 
+      - name: Run database migrations
+        run: python -m alembic upgrade head
+
       - name: Run tests
         run: python -m pytest
 
       - name: Build Docker image
         run: docker build --tag orderflow-integrator:ci .
-

@@ -1,0 +1,3 @@
+external_order_id,source_system,destination_system,customer_id,currency,items,metadata
+CSV-2001,shopify,shipping,customer-2001,USD,"[{""sku"":""DEMO-RED"",""quantity"":2,""unit_price"":""24.95""}]","{""campaign"":""spring""}"
+CSV-2002,amazon,wms,customer-2002,EUR,"[{""sku"":""DEMO-BLUE"",""quantity"":1,""unit_price"":""89.00""}]","{""priority"":""express""}"

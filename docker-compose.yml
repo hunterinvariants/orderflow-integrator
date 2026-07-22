@@ -1,21 +1,69 @@
 version: "3.8"
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: orderflow
+      POSTGRES_USER: orderflow
+      POSTGRES_PASSWORD: orderflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orderflow -d orderflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      ORDERFLOW_DATABASE_URL: postgresql+psycopg://orderflow:orderflow@postgres:5432/orderflow
+      ORDERFLOW_REDIS_URL: redis://redis:6379/0
+      ORDERFLOW_ENVIRONMENT: docker
+      ORDERFLOW_API_KEY: ${ORDERFLOW_API_KEY:-demo-orderflow-key}
     ports:
       - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
     restart: unless-stopped
     healthcheck:
-      test:
-        - CMD
-        - python
-        - -c
-        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).read()"
-      interval: 30s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).read()"]
+      interval: 15s
       timeout: 5s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 25s
 
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A app.celery_app.celery_app worker --loglevel=INFO --concurrency=2
+    environment:
+      ORDERFLOW_DATABASE_URL: postgresql+psycopg://orderflow:orderflow@postgres:5432/orderflow
+      ORDERFLOW_REDIS_URL: redis://redis:6379/0
+      ORDERFLOW_ENVIRONMENT: docker
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

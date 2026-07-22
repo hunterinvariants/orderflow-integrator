@@ -12,11 +12,16 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "OrderFlow Integrator"
-    app_version: str = "0.1.0"
+    app_version: str = "0.2.0"
     environment: str = "development"
     log_level: str = "INFO"
     default_currency: str = "USD"
     cors_origins: str = "*"
+    database_url: str = "sqlite:///./orderflow.db"
+    redis_url: str = "redis://localhost:6379/0"
+    api_key: str = "demo-orderflow-key"
+    celery_eager: bool = False
+    max_delivery_attempts: int = 3
 
     @property
     def parsed_cors_origins(self) -> list[str]:
@@ -28,4 +33,3 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
-

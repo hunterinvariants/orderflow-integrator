@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OrderFlow Control Tower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='/dashboard.css') }}">
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="OrderFlow home">
+      <span class="brand-mark"><i></i><i></i><i></i></span>
+      <span>ORDERFLOW <b>CONTROL TOWER</b></span>
+    </a>
+    <div class="system-state"><span class="pulse"></span> ALL SYSTEMS OPERATIONAL <small>v{{ version }}</small></div>
+  </header>
+
+  <main>
+    <section class="hero reveal">
+      <div>
+        <p class="eyebrow">COMMERCE OPERATIONS / LIVE OVERVIEW</p>
+        <h1>Every order.<br><em>One clear path.</em></h1>
+        <p class="lede">Normalize, route, and recover multi-channel orders across ERP, warehouse, and shipping systems.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="primary" id="seed-demo">Load demo scenario <span>↗</span></button>
+        <a class="secondary" href="/docs">Explore API</a>
+      </div>
+    </section>
+
+    <section class="metrics reveal delay-1" aria-label="Performance metrics">
+      <article><span>Orders processed</span><strong>{{ metrics.total_orders }}</strong><small>Across all channels</small></article>
+      <article><span>Success rate</span><strong>{{ '%.1f'|format(metrics.success_rate) }}<sup>%</sup></strong><small class="positive">{{ metrics.synced_orders }} synchronized</small></article>
+      <article><span>Gross order value</span><strong><sup>$</sup>{{ '{:,.0f}'.format(metrics.gross_value) }}</strong><small>Validated pipeline</small></article>
+      <article class="alert-card"><span>Needs attention</span><strong>{{ metrics.failed_orders }}</strong><small>{{ metrics.queued_orders }} currently in flight</small></article>
+    </section>
+
+    <section class="workspace reveal delay-2">
+      <div class="orders-panel">
+        <div class="section-head">
+          <div><p class="eyebrow">LIVE ORDER STREAM</p><h2>Workflow activity</h2></div>
+          <div class="filters"><input id="order-search" type="search" placeholder="Search orders"><select id="status-filter"><option value="">All states</option><option>synced</option><option>routed</option><option>failed</option><option>validated</option></select></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Order</th><th>Route</th><th>Value</th><th>Status</th><th>Activity</th></tr></thead>
+            <tbody id="orders-body">
+            {% for order in orders %}
+              <tr data-search="{{ order.external_order_id }} {{ order.customer_id }} {{ order.source_system }} {{ order.destination_system }}" data-status="{{ order.status }}">
+                <td><strong>{{ order.external_order_id }}</strong><small>{{ order.customer_id }}</small></td>
+                <td><span class="route"><b>{{ order.source_system[:3]|upper }}</b><i></i><b>{{ (order.integration_name or order.destination_system)[:3]|upper }}</b></span></td>
+                <td class="money">{{ order.currency }} {{ '{:,.2f}'.format(order.total_amount) }}</td>
+                <td><span class="status {{ order.status }}"><i></i>{{ order.status }}</span></td>
+                <td><small>{{ order.events[-1].message if order.events else 'Awaiting event' }}</small>{% if order.status == 'failed' %}<button class="retry" data-order-id="{{ order.id }}">Retry</button>{% endif %}</td>
+              </tr>
+            {% else %}
+              <tr class="empty"><td colspan="5">No orders yet. Load the demo scenario to start the flow.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside>
+        <section class="side-card">
+          <div class="section-head"><div><p class="eyebrow">CONNECTOR MESH</p><h2>Integrations</h2></div><span class="count">{{ integrations|length }}</span></div>
+          <div class="connector-list">
+          {% for integration in integrations %}
+            <div class="connector"><span class="connector-icon" style="--accent: {{ integration.accent }}">{{ integration.name[:2]|upper }}</span><div><strong>{{ integration.label }}</strong><small>{{ integration.protocol }} · Connected</small></div><i class="online"></i></div>
+          {% endfor %}
+          </div>
+        </section>
+        <section class="side-card rules">
+          <div class="section-head"><div><p class="eyebrow">DECISION ENGINE</p><h2>Routing rules</h2></div></div>
+          {% for rule in rules %}
+            <div class="rule"><span>{{ '%02d'|format(rule.priority) }}</span><div><strong>{{ rule.name }}</strong><small>→ {{ rule.integration_name }}</small></div></div>
+          {% endfor %}
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer><span>ORDERFLOW / PORTFOLIO BUILD</span><span>FastAPI · PostgreSQL · Redis · Celery</span></footer>
+  <div id="toast" role="status"></div>
+  <script src="{{ url_for('static', path='/dashboard.js') }}"></script>
+</body>
+</html>
