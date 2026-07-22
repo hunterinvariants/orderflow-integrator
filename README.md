@@ -180,10 +180,3 @@ curl http://localhost:8000/health
 ```
 
 Cloudflare provides the public HTTPS certificate and sends traffic through an outbound-only tunnel. Never commit the tunnel token or paste it into issue reports, screenshots, or chat messages.
-## Portfolio positioning
-
-This project demonstrates backend architecture, workflow automation, data modeling, async processing, failure recovery, API design, frontend delivery, containerization, testing, and deployment infrastructure in one reviewable repository.
-
-Suggested Fiverr service title:
-
-> I will build custom order, ERP, warehouse, and shipping integrations
