@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="OrderFlow normalizes, routes and recovers orders across commerce, ERP, warehouse and shipping systems.">
+  <title>OrderFlow · Interactive operations demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark"><i></i><i></i><i></i></span><span>ORDERFLOW <b>CONTROL TOWER</b></span></a>
+    <nav><a href="#workflow">Workflow</a><a href="#architecture">Architecture</a><a href="https://github.com/hunterinvariants/orderflow-integrator">GitHub ↗</a></nav>
+    <div class="system-state"><span class="pulse"></span> PORTFOLIO MODE <small>v0.2</small></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">COMMERCE OPERATIONS / INTERACTIVE OVERVIEW</p>
+        <h1>Every order.<br><em>One clear path.</em></h1>
+        <p class="lede">Normalize, route and recover multi-channel orders across ERP, warehouse and shipping systems.</p>
+      </div>
+      <div class="hero-actions"><button class="primary" id="seed-demo">Run demo scenario <span>↗</span></button><a class="secondary" href="#architecture">Explore architecture</a></div>
+    </section>
+
+    <section class="metrics" aria-label="Performance metrics">
+      <article><span>Orders processed</span><strong id="metric-total">2,917</strong><small>Across all channels</small></article>
+      <article><span>Success rate</span><strong id="metric-success">80.0<sup>%</sup></strong><small class="positive" id="metric-synced">2,334 synchronized</small></article>
+      <article><span>Gross order value</span><strong><sup>$</sup><span id="metric-value">428,640</span></strong><small>Validated pipeline</small></article>
+      <article class="alert-card"><span>Needs attention</span><strong id="metric-failed">1</strong><small><span id="metric-flight">2</span> currently in flight</small></article>
+    </section>
+
+    <section class="workspace" id="workflow">
+      <div class="orders-panel">
+        <div class="section-head">
+          <div><p class="eyebrow">LIVE ORDER STREAM</p><h2>Workflow activity</h2></div>
+          <div class="filters"><input id="order-search" type="search" placeholder="Search orders"><select id="status-filter"><option value="">All states</option><option>synced</option><option>routed</option><option>failed</option><option>validated</option></select></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Order</th><th>Route</th><th>Value</th><th>Status</th><th>Activity</th></tr></thead>
+            <tbody id="orders-body">
+              <tr data-search="shop-49281 customer 301 shopify sap" data-status="synced"><td><strong>SHOP-49281</strong><small>CUST-301</small></td><td><span class="route"><b>SHP</b><i></i><b>SAP</b></span></td><td class="money">USD 842.40</td><td><span class="status synced"><i></i>synced</span></td><td><small>ERP accepted order and reserved stock</small></td></tr>
+              <tr data-search="web-77104 customer 184 web warehouse" data-status="routed"><td><strong>WEB-77104</strong><small>CUST-184</small></td><td><span class="route"><b>WEB</b><i></i><b>WMS</b></span></td><td class="money">EUR 219.90</td><td><span class="status routed"><i></i>routed</span></td><td><small>Warehouse dispatch queued</small></td></tr>
+              <tr data-search="amz-18873 customer 552 amazon netsuite" data-status="failed"><td><strong>AMZ-18873</strong><small>CUST-552</small></td><td><span class="route"><b>AMZ</b><i></i><b>NS</b></span></td><td class="money">USD 1,480.00</td><td><span class="status failed"><i></i>failed</span></td><td><small>ERP timeout after 3 attempts</small><button class="retry">Retry safely</button></td></tr>
+              <tr data-search="csv-00842 customer 447 csv shipstation" data-status="validated"><td><strong>CSV-00842</strong><small>CUST-447</small></td><td><span class="route"><b>CSV</b><i></i><b>SHP</b></span></td><td class="money">CHF 374.50</td><td><span class="status validated"><i></i>validated</span></td><td><small>Routing policy evaluation pending</small></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside>
+        <section class="side-card">
+          <div class="section-head"><div><p class="eyebrow">CONNECTOR MESH</p><h2>Integrations</h2></div><span class="count">4</span></div>
+          <div class="connector"><span class="connector-icon" style="--accent:#6f4cff">SF</span><div><strong>Shopify</strong><small>Webhook · Connected</small></div><i class="online"></i></div>
+          <div class="connector"><span class="connector-icon" style="--accent:#1873b9">SP</span><div><strong>SAP ERP</strong><small>REST · Connected</small></div><i class="online"></i></div>
+          <div class="connector"><span class="connector-icon" style="--accent:#ee6f30">WM</span><div><strong>Warehouse</strong><small>REST · Connected</small></div><i class="online"></i></div>
+          <div class="connector"><span class="connector-icon" style="--accent:#1d8775">SH</span><div><strong>ShipStation</strong><small>REST · Connected</small></div><i class="online"></i></div>
+        </section>
+        <section class="side-card rules">
+          <div class="section-head"><div><p class="eyebrow">DECISION ENGINE</p><h2>Routing rules</h2></div></div>
+          <div class="rule"><span>01</span><div><strong>EU orders</strong><small>→ EU Warehouse</small></div></div>
+          <div class="rule"><span>02</span><div><strong>High-value orders</strong><small>→ Manual review</small></div></div>
+          <div class="rule"><span>03</span><div><strong>Default fulfillment</strong><small>→ SAP ERP</small></div></div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="architecture" id="architecture">
+      <div><p class="eyebrow">BUILT FOR FAILURE</p><h2>Reliable integrations need a recovery path.</h2></div>
+      <div class="architecture-grid">
+        <article><span>01</span><h3>Ingest &amp; normalize</h3><p>REST APIs, signed webhooks and CSV imports become one validated order model.</p></article>
+        <article><span>02</span><h3>Route &amp; dispatch</h3><p>Configurable rules select realistic ERP, WMS, storefront and shipping connectors.</p></article>
+        <article><span>03</span><h3>Observe &amp; recover</h3><p>Celery workers retry transient failures while operators retain safe manual control.</p></article>
+      </div>
+      <div class="stack"><b>Production architecture</b><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Celery</span><span>SQLAlchemy</span><span>Alembic</span><span>Docker</span></div>
+    </section>
+  </main>
+
+  <footer><span>ORDERFLOW / INTERACTIVE PORTFOLIO BUILD</span><span><a href="https://github.com/hunterinvariants/orderflow-integrator">SOURCE CODE ↗</a> · FastAPI · PostgreSQL · Redis · Celery</span></footer>
+  <div id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
